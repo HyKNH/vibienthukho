@@ -1,7 +1,8 @@
 'use client';
 
+import { Burger, Group } from "@mantine/core";
+import {Input} from "@nextui-org/react";
 import { FaSearch } from "react-icons/fa";
-import { Autocomplete, Burger, Group } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import classes from "./HeaderSearch.module.css";
 import { Logo } from "../Logo";
@@ -10,7 +11,6 @@ const links = [
   { link: "/", label: "Home" },
   { link: "/library", label: "Library" },
   { link: "/dictionary", label: "Dictionary" },
-  { link: "/faq", label: "FAQ" },
 ];
 
 export function Header() {
@@ -20,8 +20,7 @@ export function Header() {
     <a
       key={link.label}
       href={link.link}
-      className={classes.link}
-      onClick={(event) => event.preventDefault()}
+      className={`${classes.link} ${link.label === "Home" ? classes.homeLink : ""}`}
     >
       {link.label}
     </a>
@@ -30,7 +29,6 @@ export function Header() {
   return (
     <header className={classes.header}>
       <div className={classes.inner}>
-        {/* Left Group: Burger and Logo */}
         <Group>
           <Burger opened={opened} onClick={toggle} size="sm" hiddenFrom="sm" />
           <div className={classes.logoContainer}>
@@ -44,25 +42,39 @@ export function Header() {
           </div>
         </Group>
 
-        {/* Right Group: Navigation Links and Search */}
-        <Group>
-          <Group ml={50} gap={5} className={classes.links} visibleFrom="sm">
-            {items}
+        <Group className={classes.rightGroup}>
+          <Group className={classes.linksGroup} visibleFrom="sm">
+            <div className={classes.links}>{items}</div>
           </Group>
-          <Autocomplete
-            className={classes.search}
-            placeholder="Search"
-            leftSection={<FaSearch size={16} />}
-            data={[
-              "React",
-              "Angular",
-              "Vue",
-              "Next.js",
-              "Riot.js",
-              "Svelte",
-              "Blitz.js",
-            ]}
-            visibleFrom="xs"
+          <Input
+            isClearable
+            classNames={{
+            label: "text-black/50 dark:text-white/90",
+            input: [
+              "bg-transparent",
+              "text-black/90 dark:text-white/90",
+              "placeholder:text-default-700/50 dark:placeholder:text-white/60",
+            ],
+            innerWrapper: "bg-transparent",
+            inputWrapper: [
+              "shadow-xl",
+              "bg-default-200/50",
+              "dark:bg-default/60",
+              "backdrop-blur-xl",
+              "backdrop-saturate-200",
+              "hover:bg-default-200/70",
+              "dark:hover:bg-default/70",
+              "group-data-[focus=true]:bg-default-200/50",
+              "dark:group-data-[focus=true]:bg-default/60",
+              "!cursor-text",
+            ],
+            }}
+            label="Search"
+            placeholder="Type to search..."
+            radius="lg"
+            startContent={
+              <FaSearch />
+            }
           />
         </Group>
       </div>
