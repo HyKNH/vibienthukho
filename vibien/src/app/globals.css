@@ -24,3 +24,54 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.vertical-scroll-container {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  height: 70vh;
+  overflow-y: auto;
+  direction: rtl;
+  padding: 1rem;
+}
+
+.vertical-text-column {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.vertical-entry-group {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.vertical-main-text {
+  font-size: 1.125rem;
+  line-height: 2.5;
+  letter-spacing: 0.1em;
+}
+
+.vertical-comment-text {
+  font-size: 0.875rem;
+  color: #6b7280;
+  line-height: 2;
+  position: relative;
+  padding-right: 1.5rem;
+}
+
+.vertical-comment-text::before {
+  content: "⦙";
+  position: absolute;
+  right: -0.5rem;
+  color: #9ca3af;
+  font-size: 1rem;
+}
+
+.font-chinese {
+  font-family: 'Noto Serif TC', serif;
+}

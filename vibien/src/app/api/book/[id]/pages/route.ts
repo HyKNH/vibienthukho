@@ -1,24 +1,27 @@
-import { supabase } from '../../../../lib/supabaseClient';  // Adjust path as needed
+import { supabase } from '../../../../lib/supabaseClient';
 import { NextResponse } from 'next/server';
 
-// Fetch book details by ID
-export async function GET(req: Request, { params }: { params: { id: string } }) {
-  const { id } = params;  // Get book ID from route parameter
-
+export async function GET(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
   try {
-    // Fetch data from the books table
+    // Access params directly
+    const { id } = await params;
+
     const { data, error } = await supabase
-      .from('books')  // Make sure this table exists and contains your books data
-      .select('*')  // Fetch all columns
-      .eq('id', id)  // Match the ID to the parameter
-      .single();  // Fetch a single book based on ID
+      .from('pages')
+      .select('*')
+      .eq('book_id', id)
+      .order('page_number', { ascending: true });
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
+    if (error) throw error;
+    return NextResponse.json(data, { status: 200 });
 
-    return NextResponse.json(data, { status: 200 });  // Return book data as JSON
-  } catch (error) {
-    return NextResponse.json({ error: 'An error occurred while fetching the book' }, { status: 500 });
+  } catch (error: any) {
+    return NextResponse.json(
+      { error: error.message || 'Failed to fetch pages' },
+      { status: error.status || 500 }
+    );
   }
 }
