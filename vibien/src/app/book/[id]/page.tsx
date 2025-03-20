@@ -170,6 +170,9 @@ export default function BookDetail() {
                     <Image
                       src={imageUrl}
                       alt={`Page ${filename}`}
+                      width={800}
+                      height={600}
+                      layout="responsive" 
                       className="w-full h-auto object-contain cursor-pointer"
                       onClick={() => window.open(imageUrl, '_blank')}
                     />
