@@ -6,7 +6,6 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    // Access params directly
     const { id } = await params;
 
     const { data, error } = await supabase
@@ -18,10 +17,13 @@ export async function GET(
     if (error) throw error;
     return NextResponse.json(data, { status: 200 });
 
-  } catch (error: any) {
-    return NextResponse.json(
-      { error: error.message || 'Failed to fetch pages' },
-      { status: error.status || 500 }
-    );
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return NextResponse.json(
+        { error: error.message || 'Failed to fetch pages' },
+        { status: 500 }
+      );
+    }
+    return NextResponse.json({ error: 'Unknown error occurred' }, { status: 500 });
   }
 }

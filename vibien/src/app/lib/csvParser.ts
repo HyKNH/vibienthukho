@@ -1,19 +1,25 @@
+//outdated
 import Papa from 'papaparse';
 
-export const parseCSV = (file: File): Promise<any[]> => {
+interface ParsedPage {
+  page_number: string;
+  image_url: string;
+  digitized_text: string;
+}
+
+export const parseCSV = (file: File): Promise<ParsedPage[]> => {
   return new Promise((resolve, reject) => {
-    Papa.parse(file, {
+    Papa.parse<ParsedPage>(file, {
       complete: (result) => {
-        // Assuming your CSV has columns: page_number, image_url, digitized_text
-        const parsedPages = result.data.map((row: any) => ({
-          page_number: row.page_number,
-          image_url: row.image_url,
-          digitized_text: row.digitized_text,
+        const parsedPages: ParsedPage[] = result.data.map((row) => ({
+          page_number: row.page_number as string,
+          image_url: row.image_url as string,
+          digitized_text: row.digitized_text as string,
         }));
         resolve(parsedPages);
       },
       error: (error) => reject(error),
-      header: true,  // Assumes the first row is headers
+      header: true, 
     });
   });
 };

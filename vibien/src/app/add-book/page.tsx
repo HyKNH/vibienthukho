@@ -1,8 +1,17 @@
-'use client';  // Ensures this component runs on the client-side
+//outdated
+'use client';
 
 import { useState } from 'react';
-import { uploadImage } from '../lib/uploadImage'; // Assuming this handles uploading individual images
-import { parseCSV } from '../lib/csvParser'; // Function to parse CSV
+import { uploadImage } from '../lib/uploadImage';
+import { parseCSV } from '../lib/csvParser';
+
+interface CsvPageEntry {
+  page_number: string;
+  index: number;
+  main_text: string;
+  commentary: string;
+  image_url?: string;
+}
 
 export default function AddBook() {
   const [title, setTitle] = useState('');
@@ -10,8 +19,8 @@ export default function AddBook() {
   const [author, setAuthor] = useState('');
   const [year, setYear] = useState('');
   const [publisher, setPublisher] = useState('');
-  const [coverImages, setCoverImages] = useState<File[]>([]); // Array to store multiple files
-  const [csvFile, setCsvFile] = useState<File | null>(null); // For storing the uploaded CSV
+  const [coverImages, setCoverImages] = useState<File[]>([]);
+  const [csvFile, setCsvFile] = useState<File | null>(null);
 
   const handleCSVUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -23,9 +32,8 @@ export default function AddBook() {
     e.preventDefault();
 
     const imageUrls: string[] = [];
-    const pages: any[] = [];
+    const pages: CsvPageEntry[] = [];
 
-    // Upload all selected cover images
     for (const file of coverImages) {
       try {
         const imageUrl = await uploadImage(file, 'covers');
@@ -35,30 +43,28 @@ export default function AddBook() {
       }
     }
 
-    // Parse the CSV file if it exists
     if (csvFile) {
       try {
-        const parsedPages = await parseCSV(csvFile);  // Parse the CSV to get page data
-        pages.push(...parsedPages); // Add pages to the list
+        const parsedPages = await parseCSV(csvFile);
+        pages.push(...(parsedPages as CsvPageEntry[]));
       } catch (error) {
         console.error('Error parsing CSV:', error);
       }
     }
 
-    // Send book details and page data to the API
     const res = await fetch('/api/books', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json', // Set the content type
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         title,
         call_number: callNumber,
         author,
-        year,
+        year: parseInt(year, 10),
         publisher,
-        cover_images: imageUrls, // Send an array of URLs if multiple images
-        pages,  // Send the parsed pages from CSV
+        cover_images: imageUrls,
+        pages,
       }),
     });
 
@@ -67,63 +73,98 @@ export default function AddBook() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="Title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        required
-      />
-      <input
-        type="text"
-        placeholder="Call Number"
-        value={callNumber}
-        onChange={(e) => setCallNumber(e.target.value)}
-        required
-      />
-      <input
-        type="text"
-        placeholder="Author"
-        value={author}
-        onChange={(e) => setAuthor(e.target.value)}
-        required
-      />
-      <input
-        type="number"
-        placeholder="Year"
-        value={year}
-        onChange={(e) => setYear(e.target.value)}
-        required
-      />
-      <input
-        type="text"
-        placeholder="Publisher"
-        value={publisher}
-        onChange={(e) => setPublisher(e.target.value)}
-        required
-      />
+    <form onSubmit={handleSubmit} className="max-w-2xl mx-auto p-4 space-y-4">
+      <div className="space-y-2">
+        <label className="block text-sm font-medium">Title</label>
+        <input
+          type="text"
+          placeholder="Title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="w-full p-2 border rounded"
+          required
+        />
+      </div>
 
-      {/* Multiple file upload */}
-      <input
-        type="file"
-        accept="image/png"
-        onChange={(e) => {
-          if (e.target.files) {
-            setCoverImages(Array.from(e.target.files)); // Store multiple files
-          }
-        }}
-        multiple
-      />
+      <div className="space-y-2">
+        <label className="block text-sm font-medium">Call Number</label>
+        <input
+          type="text"
+          placeholder="Call Number"
+          value={callNumber}
+          onChange={(e) => setCallNumber(e.target.value)}
+          className="w-full p-2 border rounded"
+          required
+        />
+      </div>
 
-      {/* CSV file input */}
-      <input
-        type="file"
-        accept=".csv"
-        onChange={handleCSVUpload}
-      />
+      <div className="space-y-2">
+        <label className="block text-sm font-medium">Author</label>
+        <input
+          type="text"
+          placeholder="Author"
+          value={author}
+          onChange={(e) => setAuthor(e.target.value)}
+          className="w-full p-2 border rounded"
+          required
+        />
+      </div>
 
-      <button type="submit">Add Book</button>
+      <div className="space-y-2">
+        <label className="block text-sm font-medium">Year</label>
+        <input
+          type="number"
+          placeholder="Year"
+          value={year}
+          onChange={(e) => setYear(e.target.value)}
+          className="w-full p-2 border rounded"
+          required
+        />
+      </div>
+
+      <div className="space-y-2">
+        <label className="block text-sm font-medium">Publisher</label>
+        <input
+          type="text"
+          placeholder="Publisher"
+          value={publisher}
+          onChange={(e) => setPublisher(e.target.value)}
+          className="w-full p-2 border rounded"
+          required
+        />
+      </div>
+
+      <div className="space-y-2">
+        <label className="block text-sm font-medium">Cover Images (PNG)</label>
+        <input
+          type="file"
+          accept="image/png"
+          onChange={(e) => {
+            if (e.target.files) {
+              setCoverImages(Array.from(e.target.files));
+            }
+          }}
+          multiple
+          className="w-full p-2 border rounded"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <label className="block text-sm font-medium">CSV Pages Data</label>
+        <input
+          type="file"
+          accept=".csv"
+          onChange={handleCSVUpload}
+          className="w-full p-2 border rounded"
+        />
+      </div>
+
+      <button
+        type="submit"
+        className="w-full py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+      >
+        Add Book
+      </button>
     </form>
   );
 }

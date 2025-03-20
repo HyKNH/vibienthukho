@@ -29,6 +29,7 @@ interface PageGroup {
     main: string;
     comment: string;
   }>;
+  images: string[];
 }
 
 export default function BookDetail() {
@@ -44,40 +45,53 @@ export default function BookDetail() {
       if (!id) return;
 
       try {
-        // Fetch book details
         const bookRes = await fetch(`/api/book/${id}`);
         if (!bookRes.ok) throw new Error('Failed to fetch book');
         const bookData = await bookRes.json();
         if (bookData.error) throw new Error(bookData.error);
         setBook(bookData);
 
-        // Fetch pages and process
         const pagesRes = await fetch(`/api/book/${id}/pages`);
         if (!pagesRes.ok) throw new Error('Failed to fetch pages');
         const pagesData: PageEntry[] = await pagesRes.json();
-        
-        // Group and sort entries
+
+        const imageMap = new Map<string, string[]>();
+        pagesData.forEach(page => {
+          if (page.image_url) {
+            const filename = page.image_url.split('/').pop()?.split('.')[0] || '';
+            const pageNumbers = filename.split('-');
+            pageNumbers.forEach(num => {
+              if (!imageMap.has(num)) imageMap.set(num, []);
+              imageMap.get(num)?.push(page.image_url!);
+            });
+          }
+        });
+
         const grouped = pagesData.reduce((acc: Record<string, PageGroup>, page) => {
-          if (!acc[page.page_number]) {
-            acc[page.page_number] = {
-              page_number: page.page_number,
-              columns: []
+          const pageNumber = page.page_number;
+          
+          if (!acc[pageNumber]) {
+            acc[pageNumber] = {
+              page_number: pageNumber,
+              columns: [],
+              images: imageMap.get(pageNumber) || []
             };
           }
-          acc[page.page_number].columns.push({
+          
+          acc[pageNumber].columns.push({
             index: page.index,
             main: page.main_text,
             comment: page.commentary
           });
+
           return acc;
         }, {});
 
-        // Sort pages and columns
         const sortedGroups = Object.values(grouped)
           .sort((a, b) => a.page_number.localeCompare(b.page_number, undefined, { numeric: true }))
           .map(group => ({
             ...group,
-            columns: group.columns.sort((a, b) => a.index - b.index) // Ascending order
+            columns: group.columns.sort((a, b) => a.index - b.index)
           }));
 
         setPageGroups(sortedGroups);
@@ -144,18 +158,44 @@ export default function BookDetail() {
       {/* Page Content */}
       {currentPage ? (
         <div className="bg-neutral-900 rounded-lg shadow-md p-4">
-          <div className="vertical-scroll-container">
-            <div className="flex flex-row-reverse gap-4 overflow-x-auto" dir="ltr">
-              {currentPage.columns.map((column) => (
-                <div key={column.index} className="vertical-column">
-                  <p className="vertical-main-text font-chinese">
-                    {column.main}
-                  </p>
-                  <p className="vertical-comment-text font-chinese">
-                    {column.comment}
-                  </p>
-                </div>
-              ))}
+          <div className="flex gap-6">
+            {/* Image Container (Left) */}
+            <div className="w-1/3 flex flex-col gap-4">
+              {currentPage.images?.length > 0 && (() => {
+                const imageUrl = currentPage.images[0];
+                const filename = imageUrl.split('/').pop()?.split('.')[0] || '';
+                return (
+                  <div className="bg-black p-2 rounded">
+                    <img
+                      src={imageUrl}
+                      alt={`Page ${filename}`}
+                      className="w-full h-auto object-contain cursor-pointer"
+                      onClick={() => window.open(imageUrl, '_blank')}
+                    />
+                    <p className="text-center text-sm text-gray-400 mt-2">
+                      Pages: {filename.replace(/-/g, ', ')}
+                    </p>
+                  </div>
+                );
+              })()}
+            </div>
+
+            {/* Text Container (Right) */}
+            <div className="flex-1 vertical-scroll-container">
+              <div className="flex flex-row-reverse gap-4 overflow-x-auto" dir="ltr">
+                {currentPage.columns.map((column) => (
+                  <div key={column.index} className="vertical-column">
+                    <div className="text-container">
+                      <p className="vertical-main-text font-chinese">
+                        {column.main}
+                      </p>
+                      <p className="vertical-comment-text font-chinese">
+                        {column.comment}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

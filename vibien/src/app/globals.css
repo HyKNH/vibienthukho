@@ -26,7 +26,7 @@ body {
 }
 
 .vertical-scroll-container {
-  max-height: min-content;
+  max-height: fit-content;
   overflow-y: auto;
 }
 
@@ -34,12 +34,16 @@ body {
   writing-mode: vertical-rl;
   text-orientation: upright;
   height: 100%;
-  padding: 1.5rem;
+  padding: 0 1.5rem;
   border-left: 1px solid #404040;
+  min-width: 150px;
 }
 
-.vertical-column:first-child {
-  border-left: none;
+.text-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 100%;
 }
 
 .vertical-main-text {
@@ -55,13 +59,6 @@ body {
   line-height: 2;
   margin-top: 1rem;
   text-align: right;
-}
-
-.text-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  height: 100%;
 }
 
 .font-chinese {
