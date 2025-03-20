@@ -1,9 +1,12 @@
 import { supabase } from '../../../../lib/supabaseClient';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(req: NextRequest, context: { params: { id: string } }) {
+export async function GET(
+  req: NextRequest, 
+  { params }: { params: { id: string } }
+) {
   try {
-    const { id } = context.params;
+    const { id } = params;
 
     const { data, error } = await supabase
       .from('pages')
