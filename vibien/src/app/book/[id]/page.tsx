@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+import Image from "next/image";
 
 interface PageEntry {
   id: string;
@@ -166,7 +167,7 @@ export default function BookDetail() {
                 const filename = imageUrl.split('/').pop()?.split('.')[0] || '';
                 return (
                   <div className="bg-black p-2 rounded">
-                    <img
+                    <Image
                       src={imageUrl}
                       alt={`Page ${filename}`}
                       className="w-full h-auto object-contain cursor-pointer"

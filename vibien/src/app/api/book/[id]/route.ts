@@ -19,10 +19,7 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       if (error.code === 'PGRST116') {
-        return NextResponse.json(
-          { error: 'Book not found' }, 
-          { status: 404 }
-        );
+        return NextResponse.json({ error: 'Book not found' }, { status: 404 });
       }
       throw error;
     }
@@ -31,6 +28,7 @@ export async function GET(request: NextRequest) {
 
   } catch (error: unknown) {
     if (error instanceof Error) {
+      console.error('Error occurred:', error.message);
       return NextResponse.json(
         { error: error.message || 'Failed to fetch book' },
         { status: 500 }
