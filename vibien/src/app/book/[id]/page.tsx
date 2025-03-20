@@ -117,7 +117,7 @@ export default function BookDetail() {
         <button
           onClick={handlePrevious}
           disabled={currentPageIndex === 0}
-          className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50 hover:bg-gray-300"
+          className="px-4 py-2 bg-neutral-900 rounded disabled:opacity-50 hover:bg-neutral-400"
         >
           ← Previous
         </button>
@@ -129,7 +129,7 @@ export default function BookDetail() {
         <button
           onClick={handleNext}
           disabled={currentPageIndex === pageGroups.length - 1}
-          className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50 hover:bg-gray-300"
+          className="px-4 py-2 bg-neutral-900 rounded disabled:opacity-50 hover:bg-neutral-400"
         >
           Next →
         </button>
@@ -137,7 +137,7 @@ export default function BookDetail() {
 
       {/* Page Content */}
       {currentPage ? (
-        <div className="bg-white rounded-lg shadow-md p-4">
+        <div className="bg-neutral-900 rounded-lg shadow-md p-4">
           <div className="vertical-scroll-container">
             <div className="vertical-text-column">
               {currentPage.entries.map((entry, index) => (

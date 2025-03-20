@@ -37,41 +37,25 @@ body {
 .vertical-text-column {
   writing-mode: vertical-rl;
   text-orientation: upright;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
 }
 
 .vertical-entry-group {
-  writing-mode: vertical-rl;
-  text-orientation: upright;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  margin-bottom: 2rem;
 }
 
 .vertical-main-text {
-  font-size: 1.125rem;
+  font-size: 1.425rem;
   line-height: 2.5;
   letter-spacing: 0.1em;
 }
 
 .vertical-comment-text {
-  font-size: 0.875rem;
+  font-size: 1rem;
   color: #6b7280;
   line-height: 2;
-  position: relative;
-  padding-right: 1.5rem;
-}
-
-.vertical-comment-text::before {
-  content: "⦙";
-  position: absolute;
-  right: -0.5rem;
-  color: #9ca3af;
-  font-size: 1rem;
+  margin-top: 1rem;
 }
 
 .font-chinese {
-  font-family: 'Noto Serif TC', serif;
+  font-family: 'Cactus Classical Serif', serif;
 }
