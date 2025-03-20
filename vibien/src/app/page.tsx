@@ -23,7 +23,7 @@ export default function Home() {
 
     return (
         <main className="p-4">
-            <h1 className="text-2xl font-bold mb-4">Book Collection</h1>
+            <h1 className="text-2xl font-bold mb-4">Vi Biên thư khố 韋編書庫</h1>
             {/* <Link href="/add-book">
                 <button className="bg-blue-500 text-white px-4 py-2 rounded">Add a Book</button>
             </Link> */}
