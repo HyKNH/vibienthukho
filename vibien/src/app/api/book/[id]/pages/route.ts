@@ -1,12 +1,19 @@
 import { supabase } from '../../../../lib/supabaseClient';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
 export async function GET(
-  request: NextRequest,
+  request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
     const { id } = params;
+
+    if (!/^[0-9a-fA-F-]+$/.test(id)) {
+      return NextResponse.json(
+        { error: 'Invalid book ID format' },
+        { status: 400 }
+      );
+    }
 
     const { data, error } = await supabase
       .from('pages')
@@ -14,19 +21,17 @@ export async function GET(
       .eq('book_id', id)
       .order('page_number', { ascending: true });
 
-    if (error) throw error;
+    if (error) {
+      console.error('Supabase error:', error);
+      throw error;
+    }
 
     return NextResponse.json(data, { status: 200 });
 
   } catch (error: unknown) {
-    if (error instanceof Error) {
-      return NextResponse.json(
-        { error: error.message || 'Failed to fetch pages' },
-        { status: 500 }
-      );
-    }
+    console.error('Server error:', error);
     return NextResponse.json(
-      { error: 'Unknown error occurred' }, 
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }
