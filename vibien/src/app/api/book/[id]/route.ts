@@ -1,13 +1,16 @@
 import { supabase } from '../../../lib/supabaseClient';
 import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
-export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest) {
   try {
-    const { id } = await params;
-    
+    const segments = request.nextUrl.pathname.split('/');
+    const id = segments[segments.length - 2]; 
+
+    if (!id) {
+      return NextResponse.json({ error: 'Missing book ID' }, { status: 400 });
+    }
+
     const { data, error } = await supabase
       .from('books')
       .select('*')
