@@ -1,13 +1,14 @@
+import { UUID } from 'crypto';
 import { supabase } from '../../../../lib/supabaseClient';
 import { NextResponse } from 'next/server';
 
 export async function GET(
   request: Request,
-  context: { params: { id: string } }
+  context: { params: { id: UUID } }
 ) {
   try {
     const { id } = await context.params;
-    
+
     if (!id) {
       return NextResponse.json({ error: 'Missing book ID' }, { status: 400 });
     }
