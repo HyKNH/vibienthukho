@@ -1,9 +1,13 @@
 import { supabase } from '../../../../lib/supabaseClient';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
-export async function GET(request: NextRequest, context: { params: { id: string } }) {
+export async function GET(
+  request: Request,
+  context: { params: { id: string } }
+) {
   try {
-    const { id } = context.params;
+    const { id } = await context.params;
+    
     if (!id) {
       return NextResponse.json({ error: 'Missing book ID' }, { status: 400 });
     }
@@ -20,7 +24,6 @@ export async function GET(request: NextRequest, context: { params: { id: string 
 
   } catch (error) {
     console.error('Error fetching pages:', error);
-
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to fetch pages' },
       { status: 500 }
