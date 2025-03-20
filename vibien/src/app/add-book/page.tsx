@@ -46,7 +46,16 @@ export default function AddBook() {
     if (csvFile) {
       try {
         const parsedPages = await parseCSV(csvFile);
-        pages.push(...(parsedPages as CsvPageEntry[]));
+
+        const mappedPages: CsvPageEntry[] = parsedPages.map((page, index) => ({
+          page_number: page.page_number,
+          index: index + 1,
+          main_text: page.digitized_text, 
+          commentary: '', 
+          image_url: page.image_url || undefined,
+        }));
+
+        pages.push(...mappedPages);
       } catch (error) {
         console.error('Error parsing CSV:', error);
       }
