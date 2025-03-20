@@ -2,7 +2,7 @@ import { supabase } from '../../../../lib/supabaseClient';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
-  req: NextRequest, 
+  request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -25,6 +25,9 @@ export async function GET(
         { status: 500 }
       );
     }
-    return NextResponse.json({ error: 'Unknown error occurred' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Unknown error occurred' }, 
+      { status: 500 }
+    );
   }
 }
