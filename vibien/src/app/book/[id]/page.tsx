@@ -190,7 +190,7 @@ export default function BookDetail() {
                 {currentPage.columns.map((column) => (
                   <div key={column.index} className="vertical-column">
                     <div className="text-container">
-                      <p className="vertical-main-text font-chinese">
+                      <p className="vertical-main-text babelstonehan">
                         {column.main}
                       </p>
                       <p className="vertical-comment-text nomnatong">

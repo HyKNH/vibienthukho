@@ -20,6 +20,12 @@ const nomNaTong = localFont({
   weight: "400",
 });
 
+const babelStoneHan = localFont({
+  src: "./fonts/BabelStoneHan.ttf",
+  variable: "--font-babel-stone-han",
+  weight: "400",
+});
+
 export const metadata: Metadata = {
   title: "Vi Biên thư khố 韋編書庫",
   description: "a small Vietnamese Hán Nôm digital library",
@@ -33,7 +39,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${nomNaTong.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${nomNaTong.variable} ${babelStoneHan.variable} antialiased`}
       >
         {children}
       </body>
