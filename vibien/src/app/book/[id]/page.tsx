@@ -193,7 +193,7 @@ export default function BookDetail() {
                       <p className="vertical-main-text font-chinese">
                         {column.main}
                       </p>
-                      <p className="vertical-comment-text font-chinese">
+                      <p className="vertical-comment-text nomnatong">
                         {column.comment}
                       </p>
                     </div>

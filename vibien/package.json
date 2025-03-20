@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@fontsource/cactus-classical-serif": "^5.2.5",
     "@supabase/supabase-js": "^2.49.1",
     "next": "15.2.3",
     "papaparse": "^5.5.2",
