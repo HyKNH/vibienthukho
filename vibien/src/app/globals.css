@@ -26,34 +26,42 @@ body {
 }
 
 .vertical-scroll-container {
-  writing-mode: vertical-rl;
-  text-orientation: upright;
-  height: 70vh;
+  max-height: min-content;
   overflow-y: auto;
-  direction: rtl;
-  padding: 1rem;
 }
 
-.vertical-text-column {
+.vertical-column {
   writing-mode: vertical-rl;
   text-orientation: upright;
+  height: 100%;
+  padding: 1.5rem;
+  border-left: 1px solid #404040;
 }
 
-.vertical-entry-group {
-  margin-bottom: 2rem;
+.vertical-column:first-child {
+  border-left: none;
 }
 
 .vertical-main-text {
-  font-size: 1.425rem;
+  font-size: 1.625rem;
   line-height: 2.5;
   letter-spacing: 0.1em;
+  text-align: right;
 }
 
 .vertical-comment-text {
-  font-size: 1rem;
-  color: #6b7280;
+  font-size: 1.2rem;
+  color: #a3a3a3;
   line-height: 2;
   margin-top: 1rem;
+  text-align: right;
+}
+
+.text-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 100%;
 }
 
 .font-chinese {

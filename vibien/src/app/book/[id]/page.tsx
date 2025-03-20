@@ -7,6 +7,7 @@ interface PageEntry {
   id: string;
   book_id: string;
   page_number: string;
+  index: number;
   main_text: string;
   commentary: string;
   image_url?: string;
@@ -23,7 +24,8 @@ interface Book {
 
 interface PageGroup {
   page_number: string;
-  entries: Array<{
+  columns: Array<{
+    index: number;
     main: string;
     comment: string;
   }>;
@@ -54,25 +56,29 @@ export default function BookDetail() {
         if (!pagesRes.ok) throw new Error('Failed to fetch pages');
         const pagesData: PageEntry[] = await pagesRes.json();
         
-        // Group entries by page_number
+        // Group and sort entries
         const grouped = pagesData.reduce((acc: Record<string, PageGroup>, page) => {
           if (!acc[page.page_number]) {
             acc[page.page_number] = {
               page_number: page.page_number,
-              entries: []
+              columns: []
             };
           }
-          acc[page.page_number].entries.push({
+          acc[page.page_number].columns.push({
+            index: page.index,
             main: page.main_text,
             comment: page.commentary
           });
           return acc;
         }, {});
 
-        // Sort pages naturally (1a, 1b, 2, 2a, etc.)
-        const sortedGroups = Object.values(grouped).sort((a, b) => 
-          a.page_number.localeCompare(b.page_number, undefined, { numeric: true })
-        );
+        // Sort pages and columns
+        const sortedGroups = Object.values(grouped)
+          .sort((a, b) => a.page_number.localeCompare(b.page_number, undefined, { numeric: true }))
+          .map(group => ({
+            ...group,
+            columns: group.columns.sort((a, b) => a.index - b.index) // Ascending order
+          }));
 
         setPageGroups(sortedGroups);
       } catch (error) {
@@ -103,8 +109,8 @@ export default function BookDetail() {
     <div className="p-4 max-w-7xl mx-auto">
       {/* Book Header */}
       <div className="mb-8 border-b pb-4">
-        <h1 className="text-3xl font-bold mb-2 text-right">{book.title}</h1>
-        <div className="grid grid-cols-2 gap-2 text-sm text-right">
+        <h1 className="text-3xl font-bold mb-2 text-left">{book.title}</h1>
+        <div className="grid grid-cols-2 gap-2 text-sm text-left">
           <p><span className="font-semibold">Author:</span> {book.author}</p>
           <p><span className="font-semibold">Year:</span> {book.year}</p>
           <p><span className="font-semibold">Publisher:</span> {book.publisher}</p>
@@ -139,14 +145,14 @@ export default function BookDetail() {
       {currentPage ? (
         <div className="bg-neutral-900 rounded-lg shadow-md p-4">
           <div className="vertical-scroll-container">
-            <div className="vertical-text-column">
-              {currentPage.entries.map((entry, index) => (
-                <div key={index} className="vertical-entry-group">
+            <div className="flex flex-row-reverse gap-4 overflow-x-auto" dir="ltr">
+              {currentPage.columns.map((column) => (
+                <div key={column.index} className="vertical-column">
                   <p className="vertical-main-text font-chinese">
-                    {entry.main}
+                    {column.main}
                   </p>
                   <p className="vertical-comment-text font-chinese">
-                    {entry.comment}
+                    {column.comment}
                   </p>
                 </div>
               ))}
