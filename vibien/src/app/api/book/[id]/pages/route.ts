@@ -1,12 +1,9 @@
 import { supabase } from '../../../../lib/supabaseClient';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: NextRequest, context: { params: { id: string } }) {
   try {
-    const { id } = await params;
+    const { id } = context.params;
 
     const { data, error } = await supabase
       .from('pages')
@@ -15,6 +12,7 @@ export async function GET(
       .order('page_number', { ascending: true });
 
     if (error) throw error;
+
     return NextResponse.json(data, { status: 200 });
 
   } catch (error: unknown) {
