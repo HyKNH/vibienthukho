@@ -1,10 +1,9 @@
-import { UUID } from 'crypto';
 import { supabase } from '../../../../lib/supabaseClient';
 import { NextResponse } from 'next/server';
 
 export async function GET(
   request: Request,
-  context: { params: { id: UUID } }
+  context: { params: { id: string } }
 ) {
   try {
     const { id } = await context.params;
